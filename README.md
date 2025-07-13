@@ -1,3 +1,3 @@
 # osm-rivers
 
-List of rivers of NWFD.
+List of rivers.

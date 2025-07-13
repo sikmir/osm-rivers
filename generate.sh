@@ -4,13 +4,19 @@ regions=(
     "arkhangelsk:Архангельская область"
     "vologda:Вологодская область"
     "kaliningrad:Калининградская область"
+    "kirov:Кировская область"
+    "kostroma:Костромская_область"
     "leningrad:Ленинградская область"
     "murmansk:Мурманская область"
     "nenets:Ненецкий автономный округ"
     "novgorod:Новгородская область"
+    "perm:Пермский край"
     "pskov:Псковская область"
     "karelia:Республика Карелия"
     "komi:Республика Коми"
+    "tver:Тверская область"
+    "smolensk:Смоленская область"
+    "yaroslavl:Ярославская область"
 )
 
 echo "name,count" > index.csv
@@ -34,5 +40,5 @@ for region in "${regions[@]}"; do
     echo "[${name}](${slug}.html),$(wc -l < "${slug}.csv")" >> index.csv
 done
 
-csv2html -c -t "Реки СЗФО" index.csv | \
+csv2html -c -t "Реки по регионам" index.csv | \
   sed 's|\[\([^]]*\)\](\([^)]*\))|<a href="\2">\1</a>|g' > index.html

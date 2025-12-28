@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+set -e
+
+#OVERPASS_API="https://overpass-api.de/api/interpreter"
+OVERPASS_API="https://maps.mail.ru/osm/tools/overpass/api/interpreter"
 
 regions=(
     "arkhangelsk:Архангельская область"
@@ -32,7 +36,7 @@ for region in "${regions[@]}"; do
     osm_id=$(curl -sG "https://nominatim.openstreetmap.org/search" --data-urlencode "format=json" --data-urlencode "q=${name}" | jq '.[0].osm_id')
     echo "[${slug}] Run query on ${osm_id}..."
     (echo "id,name,name:ru,destination,wikidata,wikipedia,gvr:code,members"; \
-    curl -s --compressed https://overpass-api.de/api/interpreter \
+    curl -s --compressed $OVERPASS_API \
       --data-urlencode 'data=[out:json][timeout:25];area(id:'$((3600000000+osm_id))')->.searchArea;nwr["type"="waterway"]["waterway"="river"](area.searchArea);out geom;' | \
       jq -r '.elements|sort_by(.tags.name // "")|.[]|[.id,.tags.name,.tags."name:ru",.tags.destination,.tags.wikidata,.tags.wikipedia,.tags."gvr:code",(.members|length)]|@csv') > "${slug}.csv"
     echo "[${slug}] Convert to html..."

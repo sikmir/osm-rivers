@@ -5,6 +5,7 @@ name,count
 [Ивановская область](ivanovo.html),      20
 [Иркутская область](irkutsk.html),      80
 [Калининградская область](kaliningrad.html),      10
+[Кемеровская область](kemerovo.html),      46
 [Кировская область](kirov.html),      53
 [Костромская_область](kostroma.html),     109
 [Красноярский край](krasnoyarsk.html),     165
@@ -12,9 +13,11 @@ name,count
 [Магаданская область](magadan.html),      19
 [Московская область](moscow.html),     389
 [Мурманская область](murmansk.html),      68
-[Нижегородская область](nizhny-novgorod.html),      56
 [Ненецкий автономный округ](nenets.html),      42
+[Нижегородская область](nizhny-novgorod.html),      56
 [Новгородская область](novgorod.html),      46
+[Новосибирская область](novosibirsk.html),      39
+[Омская область](omsk.html),      49
 [Пермский край](perm.html),     101
 [Псковская область](pskov.html),      66
 [Республика Бурятия](buryatia.html),      60
@@ -23,4 +26,5 @@ name,count
 [Республика Саха (Якутия)](sakha.html),     153
 [Смоленская область](smolensk.html),      85
 [Тверская область](tver.html),      83
+[Томская область](tomsk.html),      41
 [Ярославская область](yaroslavl.html),     159

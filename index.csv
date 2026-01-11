@@ -1,14 +1,18 @@
 name,count
 [Архангельская область](arkhangelsk.html),     161
+[Белгородская область](belgorod.html),      26
 [Владимирская область](vladimir.html),      76
+[Волгоградская область](volgograd.html),      17
 [Вологодская область](vologda.html),     722
 [Ивановская область](ivanovo.html),      20
 [Иркутская область](irkutsk.html),      80
 [Калининградская область](kaliningrad.html),      10
+[Калужская область](kaluga.html),      70
 [Кемеровская область](kemerovo.html),      46
 [Кировская область](kirov.html),      53
 [Костромская_область](kostroma.html),     109
 [Красноярский край](krasnoyarsk.html),     165
+[Курская область](kursk.html),      18
 [Ленинградская область](leningrad.html),     131
 [Магаданская область](magadan.html),      19
 [Московская область](moscow.html),     389
@@ -18,13 +22,17 @@ name,count
 [Новгородская область](novgorod.html),      46
 [Новосибирская область](novosibirsk.html),      39
 [Омская область](omsk.html),      49
+[Пензенская область](penza.html),     149
 [Пермский край](perm.html),     101
 [Псковская область](pskov.html),      66
 [Республика Бурятия](buryatia.html),      60
 [Республика Карелия](karelia.html),      61
 [Республика Коми](komi.html),     158
 [Республика Саха (Якутия)](sakha.html),     153
+[Саратовская область](saratov.html),      30
 [Смоленская область](smolensk.html),      85
+[Тамбовская область](tambov.html),      34
 [Тверская область](tver.html),      83
 [Томская область](tomsk.html),      41
+[Тульская область](tula.html),      24
 [Ярославская область](yaroslavl.html),     159

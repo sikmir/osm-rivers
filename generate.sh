@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-#OVERPASS_API="https://overpass-api.de/api/interpreter"
-OVERPASS_API="https://maps.mail.ru/osm/tools/overpass/api/interpreter"
+OVERPASS_API="https://overpass-api.de/api/interpreter"
+#OVERPASS_API="https://maps.mail.ru/osm/tools/overpass/api/interpreter"
 
 regions=(
     "arkhangelsk:Архангельская область"
@@ -64,6 +64,7 @@ for region in "${regions[@]}"; do
       sed 's|<td>\([a-z]\{2\}\):\([^<]\+\)</td>|<td><a href="https://\1.wikipedia.org/wiki/\2">\1:\2</a></td>|g' | \
       sed 's|<td>\([0-9]\{23\}\)</td>|<td><a href="https://verum.icu/index.php?claster=gvr\&q=\1">\1</a></td>|g' > "${slug}.html"
     echo "[${name}](${slug}.html),$(wc -l < "${slug}.csv")" >> index.csv
+    sleep 60
 done
 
 csv2html -c -t "Реки по регионам" index.csv | \

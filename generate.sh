@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
-OVERPASS_API="https://overpass-api.de/api/interpreter"
-#OVERPASS_API="https://maps.mail.ru/osm/tools/overpass/api/interpreter"
+#OVERPASS_API="https://overpass-api.de/api/interpreter"
+#OVERPASS_API="https://overpass.osm.ch/api/interpreter"
+OVERPASS_API="https://maps.mail.ru/osm/tools/overpass/api/interpreter"
 
 regions=(
     "arkhangelsk:Архангельская область"

@@ -169,7 +169,7 @@ EOF
 read -r -d '' MAP_BODY <<'EOF' || true
 <div id="map"></div>
 <script type="module">
-import { Map, NavigationControl, Popup, addProtocol } from "https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl.mjs";
+import { FullscreenControl, Map, NavigationControl, Popup, addProtocol } from "https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl.mjs";
 
 addProtocol("pmtiles", new pmtiles.Protocol().tile);
 
@@ -220,6 +220,7 @@ const map = new Map({
   }
 });
 map.addControl(new NavigationControl());
+map.addControl(new FullscreenControl());
 
 map.on("mouseenter", "rivers", () => { map.getCanvas().style.cursor = "pointer"; });
 map.on("mouseleave", "rivers", () => { map.getCanvas().style.cursor = ""; });

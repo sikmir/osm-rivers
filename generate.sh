@@ -200,10 +200,20 @@ const map = new Map({
         type: "line",
         source: "rivers",
         "source-layer": "rivers",
-        layout: { "line-join": "round", "line-cap": "round" },
         paint: {
           "line-color": "#0057e7",
           "line-width": ["interpolate", ["linear"], ["zoom"], 2, 0.5, 9, 2, 14, 4]
+        }
+      },
+      {
+        id: "rivers-selected",
+        type: "line",
+        source: "rivers",
+        "source-layer": "rivers",
+        filter: ["==", ["get", "id"], -1],
+        paint: {
+          "line-color": "#e00000",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 2, 1.5, 9, 3, 14, 5]
         }
       }
     ]
@@ -213,12 +223,19 @@ map.addControl(new NavigationControl());
 
 map.on("mouseenter", "rivers", () => { map.getCanvas().style.cursor = "pointer"; });
 map.on("mouseleave", "rivers", () => { map.getCanvas().style.cursor = ""; });
+let selected = null;
+const select = (id) => {
+  selected = id;
+  map.setFilter("rivers-selected", ["==", ["get", "id"], id ?? -1]);
+};
 map.on("click", "rivers", (e) => {
   const { id, name } = e.features[0].properties;
   const link = document.createElement("a");
   link.href = `https://www.openstreetmap.org/relation/${id}`;
   link.textContent = name || id;
-  new Popup().setLngLat(e.lngLat).setDOMContent(link).addTo(map);
+  select(id);
+  new Popup().setLngLat(e.lngLat).setDOMContent(link).addTo(map)
+    .on("close", () => { if (selected === id) select(null); });
 });
 </script>
 EOF

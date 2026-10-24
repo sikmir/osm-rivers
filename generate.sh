@@ -3,6 +3,7 @@ set -euo pipefail
 
 # Usage: ./generate.sh [russia-latest.osm.pbf]
 PBF="${1:-russia-latest.osm.pbf}"
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 WORKDIR=$(mktemp -d)
 trap 'rm -rf "${WORKDIR}"' EXIT
@@ -123,6 +124,10 @@ osmium tags-filter -O -o "${WORKDIR}/filtered.osm.pbf" "${PBF}" r/admin_level=4 
 osmium tags-filter -O -o "${WORKDIR}/boundaries.osm.pbf" "${WORKDIR}/filtered.osm.pbf" r/admin_level=4
 osmium tags-filter -O -o "${WORKDIR}/rivers.osm.pbf" "${WORKDIR}/filtered.osm.pbf" r/waterway=river
 
+echo "Generate rivers.pmtiles..."
+tilemaker --quiet --input "${WORKDIR}/rivers.osm.pbf" --output rivers.pmtiles \
+  --config "${SCRIPT_DIR}/tilemaker/config.json" --process "${SCRIPT_DIR}/tilemaker/process.lua"
+
 echo "Build region polygons..."
 mkdir -p "${WORKDIR}/polygons"
 osmium export -f geojsonseq -x print_record_separator=false --geometry-types=polygon -a type,id \
@@ -152,5 +157,76 @@ for region in "${regions[@]}"; do
     echo "[${name}](${code}.html),$(($(wc -l < "${code}.csv") - 1))" >> index.csv
 done
 
+# Map preview of rivers.pmtiles
+read -r -d '' MAP_HEAD <<'EOF' || true
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl.css">
+<script src="https://unpkg.com/pmtiles@4.5.0/dist/pmtiles.js"></script>
+<style>#map { height: 70vh; margin-bottom: 1em; }</style>
+EOF
+
+read -r -d '' MAP_BODY <<'EOF' || true
+<div id="map"></div>
+<script type="module">
+import { Map, NavigationControl, Popup, addProtocol } from "https://unpkg.com/maplibre-gl@6.12.0/dist/maplibre-gl.mjs";
+
+addProtocol("pmtiles", new pmtiles.Protocol().tile);
+
+const map = new Map({
+  container: "map",
+  center: [100, 64],
+  zoom: 2,
+  hash: true,
+  style: {
+    version: 8,
+    sources: {
+      osm: {
+        type: "raster",
+        tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+        tileSize: 256,
+        maxzoom: 19,
+        attribution: '<a href="https://www.openstreetmap.org/copyright">&copy; OpenStreetMap contributors</a>'
+      },
+      rivers: {
+        type: "vector",
+        url: "pmtiles://" + new URL("rivers.pmtiles", location.href)
+      }
+    },
+    layers: [
+      { id: "osm", type: "raster", source: "osm", paint: { "raster-saturation": -1, "raster-opacity": 0.5 } },
+      {
+        id: "rivers",
+        type: "line",
+        source: "rivers",
+        "source-layer": "rivers",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: {
+          "line-color": "#0057e7",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 2, 0.5, 9, 2, 14, 4]
+        }
+      }
+    ]
+  }
+});
+map.addControl(new NavigationControl());
+
+map.on("mouseenter", "rivers", () => { map.getCanvas().style.cursor = "pointer"; });
+map.on("mouseleave", "rivers", () => { map.getCanvas().style.cursor = ""; });
+map.on("click", "rivers", (e) => {
+  const { id, name } = e.features[0].properties;
+  const link = document.createElement("a");
+  link.href = `https://www.openstreetmap.org/relation/${id}`;
+  link.textContent = name || id;
+  new Popup().setLngLat(e.lngLat).setDOMContent(link).addTo(map);
+});
+</script>
+EOF
+
 csv2html -c -t "Реки по регионам" index.csv | \
-  sed 's|\[\([^]]*\)\](\([^)]*\))|<a href="\2">\1</a>|g' > index.html
+  sed 's|\[\([^]]*\)\](\([^)]*\))|<a href="\2">\1</a>|g' | \
+  MAP_HEAD="${MAP_HEAD}" MAP_BODY="${MAP_BODY}" awk '
+    i = index($0, "</head>") { print substr($0, 1, i - 1); print ENVIRON["MAP_HEAD"]; print substr($0, i); next }
+    { print }
+    /^<body>$/ { print ENVIRON["MAP_BODY"] }
+  ' > index.html

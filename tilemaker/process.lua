@@ -8,7 +8,7 @@ end
 
 function relation_function()
 	Layer("rivers", false)
-	AttributeNumeric("id", tonumber(Id()))
+	AttributeInteger("id", tonumber(Id()))
 	local name = Find("name")
 	if name ~= "" then
 		Attribute("name", name)
